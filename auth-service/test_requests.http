@@ -1,0 +1,26 @@
+### User Registration
+POST http://localhost:8081/auth/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "securepassword"
+}
+
+### User Login
+POST http://localhost:8081/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "securepassword"
+}
+
+### User Login (Invalid Credentials)
+POST http://localhost:8081/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "wrongpassword"
+}
