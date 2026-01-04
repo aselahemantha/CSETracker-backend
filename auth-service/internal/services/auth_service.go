@@ -14,20 +14,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type AuthService struct {
+type authService struct {
 	Repo      repository.UserRepository
 	JWTSecret []byte
 }
 
-func NewAuthService(repo repository.UserRepository, secret string) *AuthService {
-	return &AuthService{
+func NewAuthService(repo repository.UserRepository, secret string) AuthService {
+	return &authService{
 		Repo:      repo,
 		JWTSecret: []byte(secret),
 	}
 }
 
 // CheckEmail returns true if email exists, false otherwise
-func (s *AuthService) CheckEmail(email string) (bool, error) {
+func (s *authService) CheckEmail(email string) (bool, error) {
 	user, err := s.Repo.GetUserByEmail(email)
 	if err != nil {
 		return false, err
@@ -35,7 +35,7 @@ func (s *AuthService) CheckEmail(email string) (bool, error) {
 	return user != nil, nil
 }
 
-func (s *AuthService) RequestVerification(email string) error {
+func (s *authService) RequestVerification(email string) error {
 	// Generate 6-digit code
 	code, err := generateRandomCode()
 	if err != nil {
@@ -52,7 +52,7 @@ func (s *AuthService) RequestVerification(email string) error {
 	return nil
 }
 
-func (s *AuthService) VerifyCode(email, code string) (bool, error) {
+func (s *authService) VerifyCode(email, code string) (bool, error) {
 	storedCode, err := s.Repo.GetVerificationCode(email)
 	if err != nil {
 		return false, err
@@ -63,7 +63,7 @@ func (s *AuthService) VerifyCode(email, code string) (bool, error) {
 	return storedCode == code, nil
 }
 
-func (s *AuthService) CompleteRegistration(email, password, firstName, lastName, code string) (*models.User, error) {
+func (s *authService) CompleteRegistration(email, password, firstName, lastName, code string) (*models.User, error) {
 	// Verify code again to be sure
 	valid, err := s.VerifyCode(email, code)
 	if err != nil {
@@ -104,7 +104,7 @@ func (s *AuthService) CompleteRegistration(email, password, firstName, lastName,
 	return user, nil
 }
 
-func (s *AuthService) Login(email, password string) (string, error) {
+func (s *authService) Login(email, password string) (string, error) {
 	user, err := s.Repo.GetUserByEmail(email)
 	if err != nil {
 		return "", err
@@ -131,7 +131,7 @@ func (s *AuthService) Login(email, password string) (string, error) {
 }
 
 // Deprecated: Use CompleteRegistration
-func (s *AuthService) Register(email, password string) (*models.User, error) {
+func (s *authService) Register(email, password string) (*models.User, error) {
 	return s.CompleteRegistration(email, password, "", "", "mock_code") // This needs refactor if keeping backward compatibility, but for this task we switch flow
 }
 
