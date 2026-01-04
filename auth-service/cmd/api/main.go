@@ -48,7 +48,14 @@ func main() {
 		fmt.Fprintln(w, "Auth Service is healthy")
 	}).Methods("GET")
 
+	r.HandleFunc("/auth/check-email", authHandler.CheckEmail).Methods("POST")
+	r.HandleFunc("/auth/verify/request", authHandler.RequestVerification).Methods("POST")
+	r.HandleFunc("/auth/verify/check", authHandler.VerifyCode).Methods("POST")
+	r.HandleFunc("/auth/register/complete", authHandler.CompleteRegistration).Methods("POST")
+
+	// Deprecated
 	r.HandleFunc("/auth/register", authHandler.Register).Methods("POST")
+
 	r.HandleFunc("/auth/login", authHandler.Login).Methods("POST")
 
 	log.Println("Starting Auth Service on :8081")

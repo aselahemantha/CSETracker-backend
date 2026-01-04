@@ -1,26 +1,57 @@
-### User Registration
-POST http://localhost:8081/auth/register
+### Health Check
+GET http://localhost:8081/health
+
+### Check Email (New User)
+POST http://localhost:8081/auth/check-email
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
-  "password": "securepassword"
+  "email": "newuser@example.com"
 }
 
-### User Login
+### Check Email (Existing User)
+POST http://localhost:8081/auth/check-email
+Content-Type: application/json
+
+{
+  "email": "test@example.com"
+}
+
+### Request Verification Code
+POST http://localhost:8081/auth/verify/request
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com"
+}
+
+### Verify Code (Invalid)
+POST http://localhost:8081/auth/verify/check
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com",
+  "code": "000000"
+}
+
+### Complete Registration (Must get code from logs/db first, assume mock/log for now or test failure)
+# NOTE: You need to check the server logs for the generated code to make this work!
+POST http://localhost:8081/auth/register/complete
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com",
+  "password": "securepassword",
+  "first_name": "John",
+  "last_name": "Doe",
+  "code": "123456" 
+}
+
+### Login
 POST http://localhost:8081/auth/login
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "email": "newuser@example.com",
   "password": "securepassword"
-}
-
-### User Login (Invalid Credentials)
-POST http://localhost:8081/auth/login
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "password": "wrongpassword"
 }
